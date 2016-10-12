@@ -202,7 +202,7 @@ ThermostatItem.prototype.getCurrentHeatingCoolingState = function(callback) {
 //TargetHeatingCoolingState
 ThermostatItem.prototype.updateTargetHeatingCoolingState = function(message) {
     this.otherService
-        .getCharacteristic(this.homebridge.hap.Characteristic.TargtHeatingCoolingState)
+        .getCharacteristic(this.homebridge.hap.Characteristic.TargetHeatingCoolingState)
         .setValue(this.checkTargetHeatingCoolingState(message));
     this.otherService
         .getCharacteristic(this.homebridge.hap.Characteristic.CurrentHeatingCoolingState)
