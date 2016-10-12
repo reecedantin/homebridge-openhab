@@ -316,13 +316,13 @@ ThermostatItem.prototype.checkTemperatureState = function(state) {
 
 ThermostatItem.prototype.checkTargetHeatingCoolingState = function(state) {
     switch (state){
-        case 0:
+        case '0':
             return this.homebridge.hap.Characteristic.TargetHeatingCoolingState.OFF;
-        case 1:
+        case '1':
             return this.homebridge.hap.Characteristic.TargetHeatingCoolingState.HEAT;
-        case 2:
+        case '2':
             return this.homebridge.hap.Characteristic.TargetHeatingCoolingState.COOL;
-        case 3:
+        case '3':
             return this.homebridge.hap.Characteristic.TargetHeatingCoolingState.AUTO;
         default:
             return this.homebridge.hap.Characteristic.TargetHeatingCoolingState.OFF;
@@ -331,13 +331,13 @@ ThermostatItem.prototype.checkTargetHeatingCoolingState = function(state) {
 
 ThermostatItem.prototype.checkCurrentHeatingCoolingState = function(state) {
     switch (state){
-        case 0:
+        case '0':
             return this.homebridge.hap.Characteristic.CurrentHeatingCoolingState.OFF;
-        case 1:
+        case '1':
             return this.homebridge.hap.Characteristic.CurrentHeatingCoolingState.HEAT;
-        case 2:
+        case '2':
             return this.homebridge.hap.Characteristic.CurrentHeatingCoolingState.COOL;
-        case 3:
+        case '3':
             return this.homebridge.hap.Characteristic.CurrentHeatingCoolingState.OFF;
         default:
             return this.homebridge.hap.Characteristic.CurrentHeatingCoolingState.OFF;
