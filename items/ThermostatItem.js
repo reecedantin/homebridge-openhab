@@ -180,13 +180,11 @@ ThermostatItem.prototype.getCurrentTemperatureState = function(callback) {
 //TargetTemperature
 ThermostatItem.prototype.getTargetTemperatureState = funtion(callback) {
     var self = this;
-    var temperatureItem;
+    //Cooling or off or auto
+    var temperatureItem = this.itemCoolingThresholdTemperature;
     if (this.itemCurrentHeatingCoolingState.state == '1') {
         //Heating
         temperatureItem = this.itemHeatingThresholdTemperature;
-    } else {
-        //Cooling or off or auto
-        temperatureItem = this.itemCoolingThresholdTemperature;
     }
     this.log("iOS - request current temperature state from " + temperatureItem.name + " (" + (self.name)+")");
     request(temperatureItem.link + '/state?type=json', function (error, response, body) {
