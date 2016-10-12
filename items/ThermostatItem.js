@@ -182,7 +182,7 @@ ThermostatItem.prototype.getTargetTemperatureState = function(callback) {
     var self = this;
     //Cooling or off or auto
     var temperatureItem = this.itemCoolingThresholdTemperature;
-    if (this.itemCurrentHeatingCoolingState.state == '1') {
+    if (this.itemTargetHeatingCoolingState.state == '1') {
         //Heating
         temperatureItem = this.itemHeatingThresholdTemperature;
     }
