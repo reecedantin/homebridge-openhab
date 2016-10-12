@@ -1,0 +1,44 @@
+{
+  "name": "homebridge-openhab",
+  "version": "0.1.31",
+  "description": "Homebridge plugin for openHAB",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "echo \"Error: configure and run homebridge to start\" && exit 1"
+  },
+  "engines": {
+    "node": ">4.0.0",
+    "homebridge": ">=0.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tommasomarchionni/homebridge-openHAB.git"
+  },
+  "keywords": [
+    "homebridge-plugin",
+    "openHAB",
+    "homekit",
+    "z-wave",
+    "Siri"
+  ],
+  "dependencies": {
+    "ws": "^0.8.1",
+    "request": "^2.65.0"
+  },
+  "author": {
+    "name": "tommasomarchionni"
+  },
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/tommasomarchionni/homebridge-openHAB/issues"
+  },
+  "homepage": "https://github.com/tommasomarchionni/homebridge-openHAB#readme",
+  "gitHead": "e68ba86c0788976879bbca8f0ab0ab12985c213e",
+  "readme": "# homebridge-openHAB\n\n[![npm package](https://nodei.co/npm-dl/homebridge-openhab.png?months=2)](https://nodei.co/npm/homebridge-openhab/)\n\n[![Gitter](https://badges.gitter.im/tommasomarchionni/homebridge-openHAB.svg)](https://gitter.im/tommasomarchionni/homebridge-openHAB?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)\n\n[Homebridge](https://www.npmjs.com/package/homebridge) plugin for [openHAB](http://www.openhab.org).\n\n## Prerequisites\n* [openHAB](http://www.openhab.org)\n* [node.js](https://nodejs.org)\n\n## Installation\n* Install the mdns and avahi library:\n\n  `sudo apt-get install libnss-mdns libavahi-compat-libdnssd-dev`\n  \n* Install [homebridge](https://www.npmjs.com/package/homebridge):\n\n  `npm install -g homebridge`\n  \n* This plugin is published through [NPM](https://www.npmjs.com/package/homebridge-openhab) and should be installed \"globally\" by typing:\n \n  `npm install -g homebridge-openhab`\n  \n* Update your config.json file (usually is in your home/.homebridge/ directory, if you can't find, follow the instruction in [homebridge](https://www.npmjs.com/package/homebridge)). See config.json in this repository for a sample.\n\n## Configuration (config.json)\n```\n{\n  \"bridge\": {\n    \"name\": \"Homebridge\",\n    \"username\": \"CC:22:3D:E3:CE:30\",\n    \"port\": 51826,\n    \"pin\": \"031-45-154\"\n  },\n\n  \"description\": \"This is an example configuration file with one fake accessory and one fake platform. You can use this as a template for creating your own configuration file containing devices you actually own.\",\n\n  \"accessories\": [\n  ],\n\n  \"platforms\": [\n    {\n      \"platform\": \"openHAB\",\n      \"name\": \"openHAB\",\n      \"host\": \"192.168.0.100\",\n      \"port\": \"8080\",\n      \"sitemap\": \"demo\",\n      \"useLabelForName\": true\n    }\n  ]\n}\n```\nFields:\n\n* \"platform\" - Must be set to openHAB\n* \"name\" - Name of openHAB server, default openHAB\n* \"host\" - IP address of the openHAB server\n* \"port\" - Port of the openHAB server\n* \"sitemap\" - Sitemap name of your openHAB server\n* \"useLabelForName\" - true if you want use item's label in the name field of HomeKit, useful if you want to use Siri. If you set this attribute to true it's important that you have unique label in your sitemap.\n\n## Advanced configuration (config.json)\nIf you want set custom attributes to your openHAB's item you should add \"customAttrs\" attribute to your config.json file.\nIn this section you can change these attributes:\n\n* \"itemLabel\" - you can set a different label,\n* \"itemManufacturer\" - you can set item's manufacter,\n* \"itemModel\" - you can set item's model,\n* \"itemSerialNumber\" - you can set item's serial number,\n* \"itemType\" - you can have different type of switch item, number item, contact item, etc. Here you can define the type:\n    * use \"TemperatureSensorItem\" for Temperature Sensor,\n    * use \"LightSensorItem\" for Light Sensor,\n    * use \"ThermostatItem\" for Thermostat (experimental support),\n    * use \"FanItem\" for Fan,\n    * use \"LightbulbItem\" for Lightbulb,\n    * use \"OutletItem\" for Outlet,\n    * use \"MotionSensorItem\" for Motion Sensor,\n    * use \"ContactItem\" for Contact Sensor.\n* \"skipItem\" - set to true if you want avoid to load the item in Homekit catalog, default is false,\n* \"itemSubType\" - use only with itemType=ThermostatItem, defines the type of openHAB item associated to ThermostatItem:\n    * use \"CurrentTemperatureCItem\" for openHAB item with current temperature value in Celsius,\n    * use \"CurrentTemperatureFItem\" for openHAB item with current temperature value in Fahrenheit,\n    * use \"TargetTemperatureCItem\" for openHAB item with target temperature value in Celsius,\n    * use \"TargetTemperatureFItem\" for openHAB item with target temperature value in Fahrenheit,\n    * use \"CurrentRelativeHumidityItem\" for openHAB item with humidity value.\n* \"itemUniqueAggregationId\" - use only with itemType=ThermostatItem, defines which item are associated with a Thermostat, use the same integer value for the same thermostat.\n\nConfiguration sample:\n```\n\"platforms\": [\n    {\n        \"platform\": \"openHAB\",\n        \"name\": \"openHAB\",\n        \"host\": \"192.168.0.100\",\n        \"port\": \"8080\",\n        \"sitemap\": \"demo\",\n        \"useLabelForName\": true,\n        \"customAttrs\": [\n            {\n                \"itemName\":\"Demo_Switch\",\n                \"itemLabel\":\"Demo Switch Label\",\n                \"itemManufacturer\": \"Demo Manufacter Switch\",\n                \"itemModel\": \"Demo Model Switch\",\n                \"itemSerialNumber\":\"12345678\"\n            },\n            {\n                \"itemName\":\"Demo_Lightbulb\",\n                \"itemLabel\":\"Demo Lightbulb Label\",\n                \"itemManufacturer\": \"Demo Manufacter Lightbulb\",\n                \"itemModel\": \"Demo Model Lightbulb\",\n                \"itemSerialNumber\":\"12345678\",\n                \"itemType\":\"LightbulbItem\"\n            },\n            {\n                \"itemName\":\"Demo_Fan\",\n                \"itemLabel\":\"Demo Fan Label\",\n                \"itemManufacturer\": \"Demo Manufacter Fan\",\n                \"itemModel\": \"Demo Model Fan\",\n                \"itemSerialNumber\":\"12345678\",\n                \"itemType\":\"FanItem\"\n            },\n            {\n                \"itemName\":\"Demo_Outlet\",\n                \"itemLabel\":\"Demo Outlet Label\",\n                \"itemManufacturer\": \"Demo Manufacter Outlet\",\n                \"itemModel\": \"Demo Model Outlet\",\n                \"itemSerialNumber\":\"123456378\",\n                \"itemType\":\"OutletItem\"\n            },\n            {\n                \"itemName\":\"Demo_Dimmer\",\n                \"itemLabel\":\"Demo Dimmer Label\",\n                \"itemManufacturer\": \"Demo Manufacter Dimmer\",\n                \"itemModel\": \"Demo Model Dimmer\",\n                \"itemSerialNumber\":\"23456789\"\n            },\n            {\n                \"itemName\":\"Demo_Temperature\",\n                \"itemLabel\":\"Demo Temperature\",\n                \"itemManufacturer\": \"Demo Manufacter Temperature\",\n                \"itemModel\": \"Demo Model Temperature\",\n                \"itemSerialNumber\":\"23456781\",\n                \"itemType\": \"TemperatureSensorItem\",\n                \"skipItem\": false\n            },\n            {\n                \"itemName\":\"living_room_ambient_temperature_c\",\n                \"itemLabel\":\"Termostat 1\",\n                \"itemType\": \"ThermostatItem\",\n                \"itemSubType\":\"CurrentTemperatureCItem\",\n                \"itemUniqueAggregationId\":1\n            },\n            {\n                \"itemName\":\"living_room_target_temperature_c\",\n                \"itemLabel\":\"Termostat 1\",\n                \"itemType\": \"ThermostatItem\",\n                \"itemSubType\":\"TargetTemperatureCItem\",\n                \"itemUniqueAggregationId\":1\n            },\n            {\n                \"itemName\":\"living_room_humidity\",\n                \"itemLabel\":\"Termostat 1\",\n                \"itemType\": \"ThermostatItem\",\n                \"itemSubType\":\"CurrentRelativeHumidityItem\",\n                \"itemUniqueAggregationId\":1\n            }\n        ]\n    }\n]\n```\n",
+  "readmeFilename": "README.md",
+  "_id": "homebridge-openhab@0.1.31",
+  "_shasum": "14221332fbab5b657a61d4087c4be721ad755146",
+  "_from": "tommasomarchionni/homebridge-openHAB",
+  "_resolved": "git://github.com/tommasomarchionni/homebridge-openHAB.git#e68ba86c0788976879bbca8f0ab0ab12985c213e"
+}
