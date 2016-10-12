@@ -123,6 +123,7 @@ ThermostatItem.prototype.getOtherServices = function() {
     //Init TargetTemperature Characteristic
     otherService.getCharacteristic(this.homebridge.hap.Characteristic.TargetTemperature)
         .on('get', this.getTargetTemperatureState.bind(this))
+        .on('set', this.setTargetTemperatureState.bind(this))
         //.setValue(this.checkTemperatureState(this.itemTargetTemperature.state));
 
     //Init CurrentHeatingCoolingState Characteristic
@@ -195,6 +196,22 @@ ThermostatItem.prototype.getTargetTemperatureState = function(callback) {
             self.log("OpenHAB HTTP - error from " + temperatureItem.name + " (" + (self.name)+"): " + error);
         }
     });
+};
+ThermostatItem.prototype.setTargetTemperatureState = function(callback) {
+    var self = this;
+    //Cooling or off or auto
+    var temperatureItem = null;
+    if (this.itemTargetHeatingCoolingState.state == '1') {
+        //Heating
+        temperatureItem = this.itemHeatingThresholdTemperature;
+    }
+    else if (this.itemTargetHeatingCoolingState.state == '2') {
+        temperatureItem = this.itemCoolingThresholdTemperature;
+    }
+    if(temperatureItem != null) {
+        this.log("iOS - send message to " + this.temperatureItem.name + ": " + value);
+    }
+    callback();
 };
 
 
