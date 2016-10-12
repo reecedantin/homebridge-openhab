@@ -197,7 +197,7 @@ ThermostatItem.prototype.getTargetTemperatureState = function(callback) {
         }
     });
 };
-ThermostatItem.prototype.setTargetTemperatureState = function(callback) {
+ThermostatItem.prototype.setTargetTemperatureState = function(value, callback) {
     var self = this;
     if (this.setInitialState) {
         callback();
