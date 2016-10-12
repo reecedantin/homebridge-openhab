@@ -243,7 +243,7 @@ ThermostatItem.prototype.getCoolingThresholdTemperature = function(callback) {
         }
     })
 };
-ThermostatItem.prototype.setCoolingThresholdTemperature = function(callback) {
+ThermostatItem.prototype.setCoolingThresholdTemperature = function(value,callback) {
     // var self = this;
     // //
     // // if (this.setInitialState) {
@@ -296,7 +296,7 @@ ThermostatItem.prototype.getHeatingThresholdTemperature = function(callback) {
         }
     })
 };
-ThermostatItem.prototype.setHeatingThresholdTemperature = function(callback) {
+ThermostatItem.prototype.setHeatingThresholdTemperature = function(value, callback) {
     callback();
 }
 
