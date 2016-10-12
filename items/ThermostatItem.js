@@ -49,14 +49,6 @@ ThermostatItem.prototype.setCurrentTemperatureItem = function(item){
     this.itemCurrentTemperature = item;
     this.temperatureDisplayUnits = this.homebridge.hap.Characteristic.TemperatureDisplayUnits.CELSIUS;
 };
-//TargetTemperature
-ThermostatItem.prototype.setTargetTemperatureItem = function(item){
-    this.itemTargetTemperature = item;
-};
-//CurrentHeatingCoolingState
-ThermostatItem.prototype.setCurrentHeatingCoolingStateItem = function(item){
-    this.itemCurrentHeatingCoolingState = item;
-};
 //TargetHeatingCoolingState
 ThermostatItem.prototype.setTargetHeatingCoolingStateItem = function(item){
     this.itemTargetHeatingCoolingState = item;
@@ -93,15 +85,6 @@ ThermostatItem.prototype.initListener = function() {
         this.wsCurrentTemperature,
         this.log,
         this.updateCurrentTemperature.bind(this)
-    );
-
-    //CurrentHeatingCoolingState
-    this.listenerCurrentHeatingCoolingState = this.listenerFactory(
-        this.itemCurrentHeatingCoolingState.name,
-        this.itemCurrentHeatingCoolingState.link,
-        this.wsCurrentHeatingCoolingState,
-        this.log,
-        this.updateCurrentHeatingCoolingState.bind(this)
     );
 
     //TargetHeatingCoolingState
@@ -152,7 +135,7 @@ ThermostatItem.prototype.getOtherServices = function() {
     //Init CurrentHeatingCoolingState Characteristic
     otherService.getCharacteristic(this.homebridge.hap.Characteristic.CurrentHeatingCoolingState)
         .on('get', this.getCurrentHeatingCoolingState.bind(this))
-        .setValue(this.checkCurrentHeatingCoolingState(this.itemCurrentHeatingCoolingState.state));
+        .setValue(this.checkCurrentHeatingCoolingState(this.itemTargetHeatingCoolingState.state));
 
     //Init TargetHeatingCoolingState Characteristic
     otherService.getCharacteristic(this.homebridge.hap.Characteristic.TargetHeatingCoolingState)
@@ -202,11 +185,6 @@ ThermostatItem.prototype.getCurrentTemperatureState = function(callback) {
 
 
 //CurrentHeatingCoolingState
-ThermostatItem.prototype.updateCurrentHeatingCoolingState = function(message) {
-    this.otherService
-        .getCharacteristic(this.homebridge.hap.Characteristic.CurrentHeatingCoolingState)
-        .setValue(this.checkCurrentHeatingCoolingState(message));
-};
 ThermostatItem.prototype.getCurrentHeatingCoolingState = function(callback) {
     var self = this;
     this.log("iOS - request Current Heating/Cooling State state from " + this.itemTargetHeatingCoolingState.name + " (" + (self.name)+")");
@@ -226,6 +204,9 @@ ThermostatItem.prototype.updateTargetHeatingCoolingState = function(message) {
     this.otherService
         .getCharacteristic(this.homebridge.hap.Characteristic.TargtHeatingCoolingState)
         .setValue(this.checkTargetHeatingCoolingState(message));
+    this.otherService
+        .getCharacteristic(this.homebridge.hap.Characteristic.CurrentHeatingCoolingState)
+        .setValue(this.checkCurrentHeatingCoolingState(message));
 };
 ThermostatItem.prototype.getTargetHeatingCoolingState = function(callback) {
     var self = this;
