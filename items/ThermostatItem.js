@@ -6,8 +6,6 @@ const EventEmitter = require("events");
 var ThermostatItem = function(widget,platform,homebridge) {
     //General
     this.temperatureDisplayUnits = homebridge.hap.Characteristic.TemperatureDisplayUnits.FAHRENHEIT;
-    this.thermostatItemEmitter = new EventEmitter();
-    this.initEmitter();
 
     //CurrentTemperature
     this.itemCurrentTemperature = undefined;
@@ -41,6 +39,9 @@ var ThermostatItem = function(widget,platform,homebridge) {
     this.listenerHeatingThresholdTemperature = undefined;
     this.wsHeatingThresholdTemperature = undefined;
 
+    this.setFromOpenHAB = false;
+    this.setInitialState = true;
+
     ThermostatItem.super_.call(this, widget,platform,homebridge);
 };
 
@@ -60,14 +61,6 @@ ThermostatItem.prototype.setCoolingThresholdTemperatureItem = function(item){
 //HeatingThresholdTemperature
 ThermostatItem.prototype.setHeatingThresholdTemperatureItem = function(item){
     this.itemHeatingThresholdTemperature = item;
-};
-
-
-ThermostatItem.prototype.initEmitter = function() {
-    var self=this;
-    this.thermostatItemEmitter.on('TARGET_TEMPERATURE_UPDATE_EVENT', function() {
-        self.setTargetTemperatureStateFromEmit();
-    });
 };
 
 /**
@@ -129,8 +122,8 @@ ThermostatItem.prototype.getOtherServices = function() {
 
     //Init TargetTemperature Characteristic
     otherService.getCharacteristic(this.homebridge.hap.Characteristic.TargetTemperature)
-        .on('get', this.getCurrentTemperatureState.bind(this))
-        .setValue(this.checkTemperatureState(this.itemCurrentTemperature.state));
+        .on('get', this.getTargetTemperatureState.bind(this))
+        .setValue(this.checkTemperatureState(this.itemTargetTemperature.state));
 
     //Init CurrentHeatingCoolingState Characteristic
     otherService.getCharacteristic(this.homebridge.hap.Characteristic.CurrentHeatingCoolingState)
@@ -159,7 +152,7 @@ ThermostatItem.prototype.getOtherServices = function() {
         .on('get', this.getTemperatureDisplayUnits.bind(this))
         .setValue(this.temperatureDisplayUnits);
 
-
+    this.setInitialState = false;
 
     return otherService;
 };
@@ -184,6 +177,29 @@ ThermostatItem.prototype.getCurrentTemperatureState = function(callback) {
 };
 
 
+//TargetTemperature
+ThermostatItem.prototype.getTargetTemperatureState = funtion(callback) {
+    var self = this;
+    var temperatureItem;
+    if (this.itemCurrentHeatingCoolingState.state == '1') {
+        //Heating
+        temperatureItem = this.itemHeatingThresholdTemperature;
+    } else {
+        //Cooling or off or auto
+        temperatureItem = this.itemCoolingThresholdTemperature;
+    }
+    this.log("iOS - request current temperature state from " + temperatureItem.name + " (" + (self.name)+")");
+    request(temperatureItem.link + '/state?type=json', function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+            self.log("OpenHAB HTTP - response from " + temperatureItem.name + " (" + (self.name)+"): " + body);
+            callback(undefined,self.checkTemperatureState(body));
+        } else {
+            self.log("OpenHAB HTTP - error from " + temperatureItem.name + " (" + (self.name)+"): " + error);
+        }
+    })
+}
+
+
 //CurrentHeatingCoolingState
 ThermostatItem.prototype.getCurrentHeatingCoolingState = function(callback) {
     var self = this;
@@ -201,12 +217,27 @@ ThermostatItem.prototype.getCurrentHeatingCoolingState = function(callback) {
 
 //TargetHeatingCoolingState
 ThermostatItem.prototype.updateTargetHeatingCoolingState = function(message) {
+    this.setFromOpenHAB = true;
     this.otherService
         .getCharacteristic(this.homebridge.hap.Characteristic.TargetHeatingCoolingState)
-        .setValue(this.checkTargetHeatingCoolingState(message));
+        .setValue(this.checkTargetHeatingCoolingState(message),
+            function() {
+                this.setFromOpenHAB = false;
+            }.bind(this)
+        );
     this.otherService
         .getCharacteristic(this.homebridge.hap.Characteristic.CurrentHeatingCoolingState)
         .setValue(this.checkCurrentHeatingCoolingState(message));
+
+    if (this.itemCurrentHeatingCoolingState.state == '1') {
+        this.otherService
+            .getCharacteristic(this.homebridge.hap.Characteristic.TargetTemperature)
+            .setValue(this.checkTemperatureState(this.itemHeatingThresholdTemperature.state));
+    } else {
+        this.otherService
+            .getCharacteristic(this.homebridge.hap.Characteristic.TargetTemperature)
+            .setValue(this.checkTemperatureState(this.itemCoolingThresholdTemperature.state));
+    }
 };
 ThermostatItem.prototype.getTargetHeatingCoolingState = function(callback) {
     var self = this;
@@ -221,15 +252,26 @@ ThermostatItem.prototype.getTargetHeatingCoolingState = function(callback) {
     })
 };
 ThermostatItem.prototype.setTargetHeatingCoolingState = function(value,callback) {
+    this.log("iOS - send message to " + this.itemTargetHeatingCoolingState.name + ": " + value);
     callback();
 };
 
 
 //CoolingThresholdTemperature
 ThermostatItem.prototype.updateCoolingThresholdTemperature = function(message) {
+    this.setFromOpenHAB = true;
     this.otherService
         .getCharacteristic(this.homebridge.hap.Characteristic.CoolingThresholdTemperature)
-        .setValue(this.checkTemperatureState(message));
+        .setValue(this.checkTemperatureState(message),
+            function() {
+                this.setFromOpenHAB = false;
+            }.bind(this)
+        );
+    if (this.itemCurrentHeatingCoolingState.state == '2') {
+        this.otherService
+            .getCharacteristic(this.homebridge.hap.Characteristic.TargetTemperature)
+            .setValue(this.checkTemperatureState(message));
+    }
 };
 ThermostatItem.prototype.getCoolingThresholdTemperature = function(callback) {
     var self = this;
@@ -257,7 +299,7 @@ ThermostatItem.prototype.setCoolingThresholdTemperature = function(value,callbac
     // //     return;
     // // }
     //
-    // this.log("iOS - send message to " + this.itemCoolingThresholdTemperature.name + ": " + value);
+    this.log("iOS - send message to " + this.itemCoolingThresholdTemperature.name + ": " + value);
     // var command = value;
     // request.post(
     //     this.itemTargetDoorState.link,
@@ -280,9 +322,19 @@ ThermostatItem.prototype.setCoolingThresholdTemperature = function(value,callbac
 
 //HeatingThresholdTemperature
 ThermostatItem.prototype.updateHeatingThresholdTemperature = function(message) {
+    this.setFromOpenHAB = true;
     this.otherService
         .getCharacteristic(this.homebridge.hap.Characteristic.HeatingThresholdTemperature)
-        .setValue(this.checkTemperatureState(message));
+        .setValue(this.checkTemperatureState(message),
+            function() {
+                this.setFromOpenHAB = false;
+            }.bind(this)
+        );
+    if (this.itemCurrentHeatingCoolingState.state == '1') {
+        this.otherService
+            .getCharacteristic(this.homebridge.hap.Characteristic.TargetTemperature)
+            .setValue(this.checkTemperatureState(message));
+    }
 };
 ThermostatItem.prototype.getHeatingThresholdTemperature = function(callback) {
     var self = this;
@@ -297,6 +349,7 @@ ThermostatItem.prototype.getHeatingThresholdTemperature = function(callback) {
     })
 };
 ThermostatItem.prototype.setHeatingThresholdTemperature = function(value, callback) {
+    this.log("iOS - send message to " + this.itemHeatingThresholdTemperature.name + ": " + value);
     callback();
 }
 
@@ -324,6 +377,8 @@ ThermostatItem.prototype.checkTargetHeatingCoolingState = function(state) {
             return this.homebridge.hap.Characteristic.TargetHeatingCoolingState.COOL;
         case '3':
             return this.homebridge.hap.Characteristic.TargetHeatingCoolingState.AUTO;
+        case '4':
+            return this.homebridge.hap.Characteristic.CurrentHeatingCoolingState.OFF;
         default:
             return this.homebridge.hap.Characteristic.TargetHeatingCoolingState.OFF;
     }
@@ -338,6 +393,8 @@ ThermostatItem.prototype.checkCurrentHeatingCoolingState = function(state) {
         case '2':
             return this.homebridge.hap.Characteristic.CurrentHeatingCoolingState.COOL;
         case '3':
+            return this.homebridge.hap.Characteristic.CurrentHeatingCoolingState.OFF;
+        case '4':
             return this.homebridge.hap.Characteristic.CurrentHeatingCoolingState.OFF;
         default:
             return this.homebridge.hap.Characteristic.CurrentHeatingCoolingState.OFF;
