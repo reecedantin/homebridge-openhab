@@ -199,6 +199,10 @@ ThermostatItem.prototype.getTargetTemperatureState = function(callback) {
 };
 ThermostatItem.prototype.setTargetTemperatureState = function(callback) {
     var self = this;
+    if (this.setInitialState) {
+        callback();
+        return;
+    }
     //Cooling or off or auto
     var temperatureItem = null;
     if (this.itemTargetHeatingCoolingState.state == '1') {
@@ -209,7 +213,7 @@ ThermostatItem.prototype.setTargetTemperatureState = function(callback) {
         temperatureItem = this.itemCoolingThresholdTemperature;
     }
     if(temperatureItem != null) {
-        this.log("iOS - send message to " + this.temperatureItem.name + ": " + value);
+        this.log("iOS - send message to " + temperatureItem.name + ": " + value);
     }
     callback();
 };
@@ -303,11 +307,10 @@ ThermostatItem.prototype.getCoolingThresholdTemperature = function(callback) {
 ThermostatItem.prototype.setCoolingThresholdTemperature = function(value,callback) {
     // var self = this;
     // //
-    // // if (this.setInitialState) {
-    // //     this.setInitialState = false;
-    // //     callback();
-    // //     return;
-    // // }
+    if (this.setInitialState) {
+        callback();
+        return;
+    }
     // //
     // // if (this.setFromOpenHAB) {
     // //     callback();
@@ -364,6 +367,10 @@ ThermostatItem.prototype.getHeatingThresholdTemperature = function(callback) {
     });
 };
 ThermostatItem.prototype.setHeatingThresholdTemperature = function(value, callback) {
+    if (this.setInitialState) {
+        callback();
+        return;
+    }
     this.log("iOS - send message to " + this.itemHeatingThresholdTemperature.name + ": " + value);
     callback();
 };
