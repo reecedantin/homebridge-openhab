@@ -123,7 +123,7 @@ ThermostatItem.prototype.getOtherServices = function() {
     //Init TargetTemperature Characteristic
     otherService.getCharacteristic(this.homebridge.hap.Characteristic.TargetTemperature)
         .on('get', this.getTargetTemperatureState.bind(this))
-        .setValue(0.0);
+        .setValue(this.checkTemperatureState(this.itemTargetTemperature.state));
 
     //Init CurrentHeatingCoolingState Characteristic
     otherService.getCharacteristic(this.homebridge.hap.Characteristic.CurrentHeatingCoolingState)
@@ -359,7 +359,7 @@ ThermostatItem.prototype.getTemperatureDisplayUnits = function(callback) {
 
 
 ThermostatItem.prototype.checkTemperatureState = function(state) {
-    if ('Unitialized' === state){
+    if (state === null){
         return 20.0;
     }
     return +state;
@@ -376,7 +376,6 @@ ThermostatItem.prototype.checkTargetHeatingCoolingState = function(state) {
         case '3':
             return this.homebridge.hap.Characteristic.TargetHeatingCoolingState.AUTO;
         case '4':
-            return this.homebridge.hap.Characteristic.CurrentHeatingCoolingState.OFF;
         default:
             return this.homebridge.hap.Characteristic.TargetHeatingCoolingState.OFF;
     }
@@ -393,7 +392,6 @@ ThermostatItem.prototype.checkCurrentHeatingCoolingState = function(state) {
         case '3':
             return this.homebridge.hap.Characteristic.CurrentHeatingCoolingState.OFF;
         case '4':
-            return this.homebridge.hap.Characteristic.CurrentHeatingCoolingState.OFF;
         default:
             return this.homebridge.hap.Characteristic.CurrentHeatingCoolingState.OFF;
     }
