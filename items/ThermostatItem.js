@@ -51,7 +51,7 @@ ThermostatItem.prototype.setCurrentTemperatureItem = function(item){
 };
 //TargetTemperature
 ThermostatItem.prototype.setTargetTemperatureItem = function(item){
-    this.itemCurrentTemperature = item;
+    this.itemTargetTemperature = item;
 };
 //CurrentHeatingCoolingState
 ThermostatItem.prototype.setCurrentHeatingCoolingStateItem = function(item){
@@ -93,15 +93,6 @@ ThermostatItem.prototype.initListener = function() {
         this.wsCurrentTemperature,
         this.log,
         this.updateCurrentTemperature.bind(this)
-    );
-
-    //TargetTemperature
-    this.listenerTargetTemperature = this.listenerFactory(
-        this.itemTargetTemperature.name,
-        this.itemTargetTemperature.link,
-        this.wsTargetTemperature,
-        this.log,
-        this.updateTargetTemperature.bind(this)
     );
 
     //CurrentHeatingCoolingState
