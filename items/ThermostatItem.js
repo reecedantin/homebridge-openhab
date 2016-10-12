@@ -173,7 +173,7 @@ ThermostatItem.prototype.getCurrentTemperatureState = function(callback) {
         } else {
             self.log("OpenHAB HTTP - error from " + self.itemCurrentTemperature.name + " (" + (self.name)+"): " + error);
         }
-    })
+    });
 };
 
 
@@ -196,8 +196,8 @@ ThermostatItem.prototype.getTargetTemperatureState = funtion(callback) {
         } else {
             self.log("OpenHAB HTTP - error from " + temperatureItem.name + " (" + (self.name)+"): " + error);
         }
-    })
-}
+    });
+};
 
 
 //CurrentHeatingCoolingState
@@ -211,7 +211,7 @@ ThermostatItem.prototype.getCurrentHeatingCoolingState = function(callback) {
         } else {
             self.log("OpenHAB HTTP - error from " + self.itemTargetHeatingCoolingState.name + " (" + (self.name)+"): " + error);
         }
-    })
+    });
 };
 
 
@@ -249,7 +249,7 @@ ThermostatItem.prototype.getTargetHeatingCoolingState = function(callback) {
         } else {
             self.log("OpenHAB HTTP - error from " + self.itemTargetHeatingCoolingState.name + " (" + (self.name)+"): " + error);
         }
-    })
+    });
 };
 ThermostatItem.prototype.setTargetHeatingCoolingState = function(value,callback) {
     this.log("iOS - send message to " + this.itemTargetHeatingCoolingState.name + ": " + value);
@@ -283,7 +283,7 @@ ThermostatItem.prototype.getCoolingThresholdTemperature = function(callback) {
         } else {
             self.log("OpenHAB HTTP - error from " + self.itemCoolingThresholdTemperature.name + " (" + (self.name)+"): " + error);
         }
-    })
+    });
 };
 ThermostatItem.prototype.setCoolingThresholdTemperature = function(value,callback) {
     // var self = this;
@@ -317,7 +317,7 @@ ThermostatItem.prototype.setCoolingThresholdTemperature = function(value,callbac
     //     }
     // );
     callback();
-}
+};
 
 
 //HeatingThresholdTemperature
@@ -346,12 +346,12 @@ ThermostatItem.prototype.getHeatingThresholdTemperature = function(callback) {
         } else {
             self.log("OpenHAB HTTP - error from " + self.itemHeatingThresholdTemperature.name + " (" + (self.name)+"): " + error);
         }
-    })
+    });
 };
 ThermostatItem.prototype.setHeatingThresholdTemperature = function(value, callback) {
     this.log("iOS - send message to " + this.itemHeatingThresholdTemperature.name + ": " + value);
     callback();
-}
+};
 
 
 
