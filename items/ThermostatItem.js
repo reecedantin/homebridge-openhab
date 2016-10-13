@@ -249,14 +249,25 @@ ThermostatItem.prototype.updateTargetHeatingCoolingState = function(message) {
         .setValue(this.checkCurrentHeatingCoolingState(message));
 
     if (this.itemTargetHeatingCoolingState.state == '1') {
+        this.setFromOpenHAB = true;
         this.otherService
             .getCharacteristic(this.homebridge.hap.Characteristic.TargetTemperature)
-            .setValue(this.checkTemperatureState(this.itemHeatingThresholdTemperature.state));
+            .setValue(this.checkTemperatureState(this.itemHeatingThresholdTemperature.state),
+                function() {
+                    this.setFromOpenHAB = false;
+                }.bind(this)
+            );
     } else {
+        this.setFromOpenHAB = true
         this.otherService
             .getCharacteristic(this.homebridge.hap.Characteristic.TargetTemperature)
-            .setValue(this.checkTemperatureState(this.itemCoolingThresholdTemperature.state));
+            .setValue(this.checkTemperatureState(this.itemCoolingThresholdTemperature.state),
+                function() {
+                    this.setFromOpenHAB = false;
+                }.bind(this)
+            );
     }
+    this.log("itemTargetHeatingCoolingState updated to : " +  itemTargetHeatingCoolingState.state);
 };
 ThermostatItem.prototype.getTargetHeatingCoolingState = function(callback) {
     var self = this;
@@ -368,9 +379,14 @@ ThermostatItem.prototype.updateHeatingThresholdTemperature = function(message) {
             }.bind(this)
         );
     if (this.itemTargetHeatingCoolingState.state == '1') {
+        this.setFromOpenHAB = true;
         this.otherService
             .getCharacteristic(this.homebridge.hap.Characteristic.TargetTemperature)
-            .setValue(this.checkTemperatureState(message));
+            .setValue(this.checkTemperatureState(message)
+                function() {
+                    this.setFromOpenHAB = false;
+                }.bind(this)
+            );
     }
 };
 ThermostatItem.prototype.getHeatingThresholdTemperature = function(callback) {
@@ -386,7 +402,7 @@ ThermostatItem.prototype.getHeatingThresholdTemperature = function(callback) {
     });
 };
 ThermostatItem.prototype.setHeatingThresholdTemperature = function(value, callback) {
-    if (this.setInitialState) {
+    if (this.setInitialState || this.setFromOpenHAB) {
         callback();
         return;
     }
@@ -409,7 +425,7 @@ ThermostatItem.prototype.checkTemperatureState = function(state) {
 };
 
 ThermostatItem.prototype.checkTargetHeatingCoolingState = function(state) {
-    switch (state){
+    switch (state.toString()){
         case '0':
             return this.homebridge.hap.Characteristic.TargetHeatingCoolingState.OFF;
         case '1':
@@ -425,7 +441,7 @@ ThermostatItem.prototype.checkTargetHeatingCoolingState = function(state) {
 };
 
 ThermostatItem.prototype.checkCurrentHeatingCoolingState = function(state) {
-    switch (state){
+    switch (state.toString()){
         case '0':
             return this.homebridge.hap.Characteristic.CurrentHeatingCoolingState.OFF;
         case '1':
