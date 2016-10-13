@@ -269,7 +269,7 @@ ThermostatItem.prototype.updateTargetHeatingCoolingState = function(message) {
 
     this.itemTargetHeatingCoolingState.state = message;
 
-    if (this.itemTargetHeatingCoolingState.state == '1') {
+    if (message.toString() == '1') {
         this.setFromOpenHAB = true;
         this.otherService
             .getCharacteristic(this.homebridge.hap.Characteristic.TargetTemperature)
@@ -314,6 +314,27 @@ ThermostatItem.prototype.setTargetHeatingCoolingState = function(value,callback)
         .getCharacteristic(this.homebridge.hap.Characteristic.CurrentHeatingCoolingState)
         .setValue(this.checkCurrentHeatingCoolingState(value));
     this.itemTargetHeatingCoolingState.state = value;
+
+    if (command.toString() == '1') {
+        this.setFromOpenHAB = true;
+        this.otherService
+            .getCharacteristic(this.homebridge.hap.Characteristic.TargetTemperature)
+            .setValue(this.checkTemperatureState(this.itemHeatingThresholdTemperature.state),
+                function() {
+                    this.setFromOpenHAB = false;
+                }.bind(this)
+            );
+    } else {
+        this.setFromOpenHAB = true
+        this.otherService
+            .getCharacteristic(this.homebridge.hap.Characteristic.TargetTemperature)
+            .setValue(this.checkTemperatureState(this.itemCoolingThresholdTemperature.state),
+                function() {
+                    this.setFromOpenHAB = false;
+                }.bind(this)
+            );
+    }
+
     request.post(
         this.itemTargetHeatingCoolingState.link,
         {
