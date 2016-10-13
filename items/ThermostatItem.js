@@ -280,16 +280,16 @@ ThermostatItem.prototype.setTargetHeatingCoolingState = function(value,callback)
     var command = value;
     this.log("iOS - send message to " + this.itemTargetHeatingCoolingState.name + ": " + value);
     request.post(
-        this.itemTargetDoorState.link,
+        this.itemTargetHeatingCoolingState.link,
         {
             body: command,
             headers: {'Content-Type': 'text/plain'}
         },
         function (error, response, body) {
             if (!error && response.statusCode == 201) {
-                self.log("OpenHAB HTTP - response from " + self.itemCoolingThresholdTemperature.name + ": " + body);
+                self.log("OpenHAB HTTP - response from " + self.itemTargetHeatingCoolingState.name + ": " + body);
             } else {
-                self.log("OpenHAB HTTP - error from " + self.itemCoolingThresholdTemperature.name + ": " + error);
+                self.log("OpenHAB HTTP - error from " + self.itemTargetHeatingCoolingState.name + ": " + error);
             }
             callback();
         }
