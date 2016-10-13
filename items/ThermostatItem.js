@@ -205,11 +205,11 @@ ThermostatItem.prototype.setTargetTemperatureState = function(value, callback) {
     }
     //Cooling or off or auto
     var temperatureItem = null;
-    if (this.itemTargetHeatingCoolingState.state == '1') {
+    if (this.itemTargetHeatingCoolingState.state == 1) {
         //Heating
         temperatureItem = this.itemHeatingThresholdTemperature;
     }
-    else if (this.itemTargetHeatingCoolingState.state == '2') {
+    else if (this.itemTargetHeatingCoolingState.state == 2) {
         temperatureItem = this.itemCoolingThresholdTemperature;
     }
     if(temperatureItem != null) {
