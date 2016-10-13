@@ -382,7 +382,7 @@ ThermostatItem.prototype.updateHeatingThresholdTemperature = function(message) {
         this.setFromOpenHAB = true;
         this.otherService
             .getCharacteristic(this.homebridge.hap.Characteristic.TargetTemperature)
-            .setValue(this.checkTemperatureState(message)
+            .setValue(this.checkTemperatureState(message),
                 function() {
                     this.setFromOpenHAB = false;
                 }.bind(this)
