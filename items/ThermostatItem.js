@@ -213,7 +213,7 @@ ThermostatItem.prototype.setTargetTemperatureState = function(value, callback) {
         temperatureItem = this.itemCoolingThresholdTemperature;
     }
     if(temperatureItem != null) {
-        this.log("iOS - send message to " + temperatureItem.name + ": " + value);
+        this.log("iOS - send message to " + temperatureItem.name + ": " + value + " current state: " + this.itemTargetHeatingCoolingState.state);
     }
     callback();
 };
