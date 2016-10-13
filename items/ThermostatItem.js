@@ -214,6 +214,23 @@ ThermostatItem.prototype.setTargetTemperatureState = function(value, callback) {
     }
     if(temperatureItem != null) {
         this.log("iOS - send message to " + temperatureItem.name + ": " + value + " current state: " + this.itemTargetHeatingCoolingState.state);
+        var self = this;
+        var command = value;
+        request.post(
+            temperatureItem.link,
+            {
+                body: command,
+                headers: {'Content-Type': 'text/plain'}
+            },
+            function (error, response, body) {
+                if (!error && response.statusCode == 201) {
+                    self.log("OpenHAB HTTP - response from " + temperatureItem.name + ": " + body);
+                } else {
+                    self.log("OpenHAB HTTP - error from " + temperatureItem.name + ": " + error);
+                }
+                callback();
+            }
+        );
     }
     callback();
 };
@@ -353,24 +370,23 @@ ThermostatItem.prototype.setCoolingThresholdTemperature = function(value,callbac
         return;
     }
     this.log("iOS - send message to " + this.itemCoolingThresholdTemperature.name + ": " + value);
-    // var self = this;
-    // var command = value;
-    // request.post(
-    //     this.itemTargetDoorState.link,
-    //     {
-    //         body: command,
-    //         headers: {'Content-Type': 'text/plain'}
-    //     },
-    //     function (error, response, body) {
-    //         if (!error && response.statusCode == 201) {
-    //             self.log("OpenHAB HTTP - response from " + self.itemCoolingThresholdTemperature.name + ": " + body);
-    //         } else {
-    //             self.log("OpenHAB HTTP - error from " + self.itemCoolingThresholdTemperature.name + ": " + error);
-    //         }
-    //         callback();
-    //     }
-    // );
-    callback();
+    var self = this;
+    var command = value;
+    request.post(
+        this.itemCoolingThresholdTemperature.link,
+        {
+            body: command,
+            headers: {'Content-Type': 'text/plain'}
+        },
+        function (error, response, body) {
+            if (!error && response.statusCode == 201) {
+                self.log("OpenHAB HTTP - response from " + self.itemCoolingThresholdTemperature.name + ": " + body);
+            } else {
+                self.log("OpenHAB HTTP - error from " + self.itemCoolingThresholdTemperature.name + ": " + error);
+            }
+            callback();
+        }
+    );
 };
 
 
@@ -413,7 +429,23 @@ ThermostatItem.prototype.setHeatingThresholdTemperature = function(value, callba
         return;
     }
     this.log("iOS - send message to " + this.itemHeatingThresholdTemperature.name + ": " + value);
-    callback();
+    var self = this;
+    var command = value;
+    request.post(
+        this.itemHeatingThresholdTemperature.link,
+        {
+            body: command,
+            headers: {'Content-Type': 'text/plain'}
+        },
+        function (error, response, body) {
+            if (!error && response.statusCode == 201) {
+                self.log("OpenHAB HTTP - response from " + self.itemHeatingThresholdTemperature.name + ": " + body);
+            } else {
+                self.log("OpenHAB HTTP - error from " + self.itemHeatingThresholdTemperature.name + ": " + error);
+            }
+            callback();
+        }
+    );
 };
 
 
