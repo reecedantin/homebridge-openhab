@@ -281,7 +281,7 @@ ThermostatItem.prototype.setTargetHeatingCoolingState = function(value,callback)
     this.log("iOS - send message to " + this.itemTargetHeatingCoolingState.name + ": " + value);
     this.otherService
         .getCharacteristic(this.homebridge.hap.Characteristic.CurrentHeatingCoolingState)
-        .setValue(this.checkCurrentHeatingCoolingState(value);
+        .setValue(this.checkCurrentHeatingCoolingState(value));
 
     request.post(
         this.itemTargetHeatingCoolingState.link,
