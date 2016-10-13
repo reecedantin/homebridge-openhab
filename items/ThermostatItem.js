@@ -199,7 +199,7 @@ ThermostatItem.prototype.getTargetTemperatureState = function(callback) {
 };
 ThermostatItem.prototype.setTargetTemperatureState = function(value, callback) {
     var self = this;
-    if (this.setInitialState) {
+    if (this.setInitialState || this.setFromOpenHAB) {
         callback();
         return;
     }
