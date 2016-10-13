@@ -232,7 +232,9 @@ ThermostatItem.prototype.setTargetTemperatureState = function(value, callback) {
             }
         );
     }
-    callback();
+    else {
+        callback();
+    }
 };
 
 
