@@ -219,7 +219,7 @@ ThermostatItem.prototype.setTargetTemperatureState = function(value, callback) {
         request.post(
             temperatureItem.link,
             {
-                body: command,
+                body: command.toString(),
                 headers: {'Content-Type': 'text/plain'}
             },
             function (error, response, body) {
@@ -375,7 +375,7 @@ ThermostatItem.prototype.setCoolingThresholdTemperature = function(value,callbac
     request.post(
         this.itemCoolingThresholdTemperature.link,
         {
-            body: command,
+            body: command.toString(),
             headers: {'Content-Type': 'text/plain'}
         },
         function (error, response, body) {
@@ -434,7 +434,7 @@ ThermostatItem.prototype.setHeatingThresholdTemperature = function(value, callba
     request.post(
         this.itemHeatingThresholdTemperature.link,
         {
-            body: command,
+            body: command.toString(),
             headers: {'Content-Type': 'text/plain'}
         },
         function (error, response, body) {
