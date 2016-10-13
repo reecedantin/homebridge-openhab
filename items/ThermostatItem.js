@@ -248,6 +248,8 @@ ThermostatItem.prototype.updateTargetHeatingCoolingState = function(message) {
         .getCharacteristic(this.homebridge.hap.Characteristic.CurrentHeatingCoolingState)
         .setValue(this.checkCurrentHeatingCoolingState(message));
 
+    this.itemTargetHeatingCoolingState.state = message;
+
     if (this.itemTargetHeatingCoolingState.state == '1') {
         this.setFromOpenHAB = true;
         this.otherService
@@ -293,7 +295,7 @@ ThermostatItem.prototype.setTargetHeatingCoolingState = function(value,callback)
     this.otherService
         .getCharacteristic(this.homebridge.hap.Characteristic.CurrentHeatingCoolingState)
         .setValue(this.checkCurrentHeatingCoolingState(value));
-
+    this.itemTargetHeatingCoolingState.state = value;
     request.post(
         this.itemTargetHeatingCoolingState.link,
         {
