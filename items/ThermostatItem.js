@@ -282,7 +282,7 @@ ThermostatItem.prototype.setTargetHeatingCoolingState = function(value,callback)
     request.post(
         this.itemTargetHeatingCoolingState.link,
         {
-            body: command,
+            body: command.toString(),
             headers: {'Content-Type': 'text/plain'}
         },
         function (error, response, body) {
