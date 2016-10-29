@@ -61,7 +61,7 @@ DimmerItem.prototype.getItemPowerState = function(callback) {
     this.log("iOS - request power state from " + this.name);
     request(this.url + '/state?type=json', function (error, response, body) {
         if (!error && response.statusCode == 200) {
-            self.log("OpenHAB HTTP - response from " + self.name + ": " + body);
+            self.log("OpenHAB HTTP - power state response from " + self.name + ": " + body);
             callback(undefined,+body > 0);
         } else {
             self.log("OpenHAB HTTP - error from " + self.name + ": " + error);
@@ -85,8 +85,8 @@ DimmerItem.prototype.setItem = function(value, callback) {
     }
 
     this.log("iOS - send message to " + this.name + ": " + value);
-    var command = 0;
-    if (value == '1' && this.otherService.getCharacteristic(this.homebridge.hap.Characteristic.On).value == false) {
+    var command = "0";
+    if (value == '1' && this.otherService.getCharacteristic(this.homebridge.hap.Characteristic.On).value == true) {
         callback();
         return;
     } else {
@@ -121,7 +121,7 @@ DimmerItem.prototype.getItemBrightnessState = function(callback) {
     this.log("iOS - request brightness state from " + this.name);
     request(this.url + '/state?type=json', function (error, response, body) {
         if (!error && response.statusCode == 200) {
-            self.log("OpenHAB HTTP - response from " + self.name + ": " + body);
+            self.log("OpenHAB HTTP - brightness state response from " + self.name + ": " + body);
             callback(undefined,+body);
         } else {
             self.log("OpenHAB HTTP - error from " + self.name + ": " + error);
