@@ -44,7 +44,7 @@ DimmerItem.prototype.updateCharacteristics = function(message) {
                     }
                 }.bind(this));
         this.otherService.getCharacteristic(this.homebridge.hap.Characteristic.On)
-            .setValue(brightness < 0,
+            .setValue(brightness > 0,
                 function() {
                     steps--;
                     if (!steps) {
@@ -61,8 +61,8 @@ DimmerItem.prototype.getItemPowerState = function(callback) {
     this.log("iOS - request power state from " + this.name);
     request(this.url + '/state?type=json', function (error, response, body) {
         if (!error && response.statusCode == 200) {
-            self.log("OpenHAB HTTP - power state response from " + self.name + ": " + (+body < 0));
-            callback(undefined,+body < 0);
+            self.log("OpenHAB HTTP - power state response from " + self.name + ": " + (+body > 0));
+            callback(undefined,+body > 0);
         } else {
             self.log("OpenHAB HTTP - error from " + self.name + ": " + error);
         }
