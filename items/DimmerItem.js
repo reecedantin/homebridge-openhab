@@ -86,14 +86,18 @@ DimmerItem.prototype.setItem = function(value, callback) {
 
     this.log("iOS - send message to " + this.name + ": " + value);
     var command = "0";
-    if (value == '1' && this.otherService.getCharacteristic(this.homebridge.hap.Characteristic.On).value == true) {
+    if (value == '1') {
         callback();
         return;
     } else if (value == false) {
         command = "0";
+    } else if (value == true) {
+        value = '100';
+        command = "" + value;
     } else {
         command = "" + value;
     }
+
     if (value == '100' && self.name.indexOf("Volume") !== -1)
     {
         command = "20";
