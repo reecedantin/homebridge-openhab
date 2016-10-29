@@ -92,7 +92,7 @@ DimmerItem.prototype.setItem = function(value, callback) {
     } else {
         command = "" + value;
     }
-    if (value == '100')
+    if (value == '100' && self.name.indexOf("Volume") !== -1)
     {
         command = "20";
     }
