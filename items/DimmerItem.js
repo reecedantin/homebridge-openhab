@@ -89,6 +89,8 @@ DimmerItem.prototype.setItem = function(value, callback) {
     if (value == '1' && this.otherService.getCharacteristic(this.homebridge.hap.Characteristic.On).value == false) {
         callback();
         return;
+    } else if (value == false) {
+        command = "0";
     } else {
         command = "" + value;
     }
