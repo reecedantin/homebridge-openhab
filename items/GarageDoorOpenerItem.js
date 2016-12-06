@@ -119,6 +119,7 @@ GarageDoorOpenerItem.prototype.checkCurrentDoorState = function(state) {
         case 'OPENING':
             return this.homebridge.hap.Characteristic.CurrentDoorState.OPENING;
         case 'STOPPED':
+            return this.homebridge.hap.Characteristic.CurrentDoorState.STOPPED;
         default:
             return this.homebridge.hap.Characteristic.CurrentDoorState.STOPPED;
     }
@@ -133,6 +134,7 @@ GarageDoorOpenerItem.prototype.checkTargetDoorState = function(state) {
         case 'ON':
             return this.homebridge.hap.Characteristic.TargetDoorState.OPEN;
         case 'OFF':
+            return this.homebridge.hap.Characteristic.TargetDoorState.CLOSED;
         default:
             return this.homebridge.hap.Characteristic.TargetDoorState.CLOSED;
     }
