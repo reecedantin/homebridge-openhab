@@ -8,21 +8,38 @@ var ContactItem = function(widget,platform,homebridge) {
 
 ContactItem.prototype.getOtherServices = function() {
     var otherService = new this.homebridge.hap.Service.ContactSensor();
-    this.log("MY NAME IS: " + this.name);
-    otherService.getCharacteristic(this.homebridge.hap.Characteristic.ContactSensorState)
-        .on('get', this.getItemState.bind(this))
-        .setValue(this.checkItemState(this.state));
+    if (this.name.indexOf("Motion") > -1) {
+        otherService = new this.homebridge.hap.Service.MotionSensor();
+        otherService.getCharacteristic(this.homebridge.hap.Characteristic.MotionDetected)
+            .on('get', this.getItemState.bind(this))
+            .setValue(this.checkItemState(this.state));
+    } else {
+        otherService = new this.homebridge.hap.Service.ContactSensor();
+        otherService.getCharacteristic(this.homebridge.hap.Characteristic.ContactSensorState)
+            .on('get', this.getItemState.bind(this))
+            .setValue(this.checkItemState(this.state));
+    }
 
     return otherService;
 };
 
 ContactItem.prototype.checkItemState = function(state) {
-    if ('Unitialized' === state){
-        return this.homebridge.hap.Characteristic.ContactSensorState.CONTACT_NOT_DETECTED;
-    } else if ('OPEN' === state){
-        return this.homebridge.hap.Characteristic.ContactSensorState.CONTACT_NOT_DETECTED;
+    if (this.name.indexOf("Motion") > -1) {
+        if ('Unitialized' === state){
+            return false;
+        } else if ('OPEN' === state){
+            return true;
+        } else {
+            return false;
+        }
     } else {
-        return this.homebridge.hap.Characteristic.ContactSensorState.CONTACT_DETECTED;
+        if ('Unitialized' === state){
+            return this.homebridge.hap.Characteristic.ContactSensorState.CONTACT_NOT_DETECTED;
+        } else if ('OPEN' === state){
+            return this.homebridge.hap.Characteristic.ContactSensorState.CONTACT_NOT_DETECTED;
+        } else {
+            return this.homebridge.hap.Characteristic.ContactSensorState.CONTACT_DETECTED;
+        }
     }
 };
 
