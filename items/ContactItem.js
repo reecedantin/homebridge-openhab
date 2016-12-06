@@ -8,7 +8,7 @@ var ContactItem = function(widget,platform,homebridge) {
 
 ContactItem.prototype.getOtherServices = function() {
     var otherService = new this.homebridge.hap.Service.ContactSensor();
-
+    this.log("MY NAME IS: " + this.name);
     otherService.getCharacteristic(this.homebridge.hap.Characteristic.ContactSensorState)
         .on('get', this.getItemState.bind(this))
         .setValue(this.checkItemState(this.state));
