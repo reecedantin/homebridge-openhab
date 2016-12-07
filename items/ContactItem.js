@@ -44,9 +44,15 @@ ContactItem.prototype.checkItemState = function(state) {
 };
 
 ContactItem.prototype.updateCharacteristics = function(message) {
-    this.otherService
-        .getCharacteristic(this.homebridge.hap.Characteristic.ContactSensorState)
-        .setValue(this.checkItemState(message));
+    if (this.name.indexOf("Motion") > -1) {
+        this.otherService
+            .getCharacteristic(this.homebridge.hap.Characteristic.MotionDetected)
+            .setValue(this.checkItemState(message));
+    } else {
+        this.otherService
+            .getCharacteristic(this.homebridge.hap.Characteristic.ContactSensorState)
+            .setValue(this.checkItemState(message));
+    }
 };
 
 ContactItem.prototype.getItemState = function(callback) {
