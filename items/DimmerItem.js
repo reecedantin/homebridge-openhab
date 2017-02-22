@@ -115,7 +115,9 @@ DimmerItem.prototype.setItem = function(value, callback) {
         },
         function (error, response, body) {
             if (!error && response.statusCode == 201) {
-                self.log(self.name + " set to " + body + "%");
+                if(body === ""){
+                    self.log(self.name + " set to " + body + "%");
+                }
                 //self.log("OpenHAB HTTP - response from " + self.name + ": " + body);
             } else {
                 //self.log("OpenHAB HTTP - error from " + self.name + ": " + error);
