@@ -58,13 +58,13 @@ DimmerItem.prototype.getItemPowerState = function(callback) {
 
     var self = this;
 
-    this.log("iOS - request power state from " + this.name);
+    //this.log("iOS - request power state from " + this.name);
     request(this.url + '/state?type=json', function (error, response, body) {
         if (!error && response.statusCode == 200) {
-            self.log("OpenHAB HTTP - power state response from " + self.name + ": " + (+body > 0));
+            //self.log("OpenHAB HTTP - power state response from " + self.name + ": " + (+body > 0));
             callback(undefined,+body > 0);
         } else {
-            self.log("OpenHAB HTTP - error from " + self.name + ": " + error);
+            //self.log("OpenHAB HTTP - error from " + self.name + ": " + error);
         }
     })
 };
@@ -115,7 +115,7 @@ DimmerItem.prototype.setItem = function(value, callback) {
         },
         function (error, response, body) {
             if (!error && response.statusCode == 201) {
-                this.log(this.name + " set to " + body + "%");
+                self.log(self.name + " set to " + body + "%");
                 //self.log("OpenHAB HTTP - response from " + self.name + ": " + body);
             } else {
                 //self.log("OpenHAB HTTP - error from " + self.name + ": " + error);
@@ -130,13 +130,13 @@ DimmerItem.prototype.getItemBrightnessState = function(callback) {
 
     var self = this;
 
-    this.log("iOS - request brightness state from " + this.name);
+    //this.log("iOS - request brightness state from " + this.name);
     request(this.url + '/state?type=json', function (error, response, body) {
         if (!error && response.statusCode == 200) {
-            self.log("OpenHAB HTTP - brightness state response from " + self.name + ": " + body);
+            //self.log("OpenHAB HTTP - brightness state response from " + self.name + ": " + body);
             callback(undefined,+body);
         } else {
-            self.log("OpenHAB HTTP - error from " + self.name + ": " + error);
+            //self.log("OpenHAB HTTP - error from " + self.name + ": " + error);
         }
     })
 };

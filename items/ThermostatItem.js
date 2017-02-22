@@ -1,4 +1,4 @@
-"use strict";
+self.log(self"use strict";
 
 var request = require("request");
 const EventEmitter = require("events");
@@ -348,7 +348,7 @@ ThermostatItem.prototype.setTargetHeatingCoolingState = function(value,callback)
         },
         function (error, response, body) {
             if (!error && response.statusCode == 201) {
-                this.log(this.name + " heating/cooling state: " + body);
+                self.log(self.name + " heating/cooling state: " + body);
                 //self.log("OpenHAB HTTP - response from " + self.itemTargetHeatingCoolingState.name + ": " + body);
             } else {
                 //self.log("OpenHAB HTTP - error from " + self.itemTargetHeatingCoolingState.name + ": " + error);
@@ -410,7 +410,7 @@ ThermostatItem.prototype.setCoolingThresholdTemperature = function(value,callbac
         },
         function (error, response, body) {
             if (!error && response.statusCode == 201) {
-                this.log(this.name + " cooling temperature: " + body);
+                self.log(self.name + " cooling temperature: " + body);
                 //self.log("OpenHAB HTTP - response from " + self.itemCoolingThresholdTemperature.name + ": " + body);
             } else {
                 //self.log("OpenHAB HTTP - error from " + self.itemCoolingThresholdTemperature.name + ": " + error);
@@ -471,7 +471,7 @@ ThermostatItem.prototype.setHeatingThresholdTemperature = function(value, callba
         },
         function (error, response, body) {
             if (!error && response.statusCode == 201) {
-                this.log(this.name + " heating temperature: " + body);
+                self.log(self.name + " heating temperature: " + body);
                 //self.log("OpenHAB HTTP - response from " + self.itemHeatingThresholdTemperature.name + ": " + body);
             } else {
                 //self.log("OpenHAB HTTP - error from " + self.itemHeatingThresholdTemperature.name + ": " + error);
