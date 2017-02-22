@@ -1,4 +1,4 @@
-self.log(self"use strict";
+"use strict";
 
 var request = require("request");
 const EventEmitter = require("events");
