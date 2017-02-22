@@ -45,10 +45,18 @@ ContactItem.prototype.checkItemState = function(state) {
 
 ContactItem.prototype.updateCharacteristics = function(message) {
     if (this.name.indexOf("Motion") > -1) {
+        if ('OPEN' === message){
+            this.log(this.name + " detected");
+        }
         this.otherService
             .getCharacteristic(this.homebridge.hap.Characteristic.MotionDetected)
             .setValue(this.checkItemState(message));
     } else {
+        if ('OPEN' === message){
+            this.log(this.name + " opened");
+        } else {
+            this.log(this.name + " closed");
+        }
         this.otherService
             .getCharacteristic(this.homebridge.hap.Characteristic.ContactSensorState)
             .setValue(this.checkItemState(message));
@@ -58,13 +66,13 @@ ContactItem.prototype.updateCharacteristics = function(message) {
 ContactItem.prototype.getItemState = function(callback) {
 
     var self = this;
-    this.log("iOS - request power state from " + this.name);
+    //this.log("iOS - request power state from " + this.name);
     request(this.url + '/state?type=json', function (error, response, body) {
         if (!error && response.statusCode == 200) {
-            self.log("OpenHAB HTTP - response from " + self.name + ": " + body);
+            //self.log("OpenHAB HTTP - response from " + self.name + ": " + body);
             callback(undefined,self.checkItemState(body));
         } else {
-            self.log("OpenHAB HTTP - error from " + self.name + ": " + error);
+            //self.log("OpenHAB HTTP - error from " + self.name + ": " + error);
         }
     })
 };

@@ -73,18 +73,7 @@ DimmerItem.prototype.setItem = function(value, callback) {
 
     var self = this;
 
-    if (this.setInitialState) {
-        this.setInitialState = false;
-        callback();
-        return;
-    }
-
-    if (this.setFromOpenHAB) {
-        callback();
-        return;
-    }
-
-    this.log("iOS - send message to " + this.name + ": " + value);
+    //this.log("iOS - send message to " + this.name + ": " + value);
     var command = "0";
     if (value == '1') {
         callback();
@@ -103,6 +92,21 @@ DimmerItem.prototype.setItem = function(value, callback) {
         command = "20";
     }
 
+    if (this.setInitialState) {
+        this.setInitialState = false;
+        this.log(this.name + " set to " + command + "%");
+        callback();
+        return;
+    }
+
+    if (this.setFromOpenHAB) {
+        this.log(this.name + " set to " + command + "%");
+        callback();
+        return;
+    }
+
+
+
     request.post(
         this.url,
         {
@@ -111,10 +115,12 @@ DimmerItem.prototype.setItem = function(value, callback) {
         },
         function (error, response, body) {
             if (!error && response.statusCode == 201) {
-                self.log("OpenHAB HTTP - response from " + self.name + ": " + body);
+                this.log(this.name + " set to " + body + "%");
+                //self.log("OpenHAB HTTP - response from " + self.name + ": " + body);
             } else {
-                self.log("OpenHAB HTTP - error from " + self.name + ": " + error);
+                //self.log("OpenHAB HTTP - error from " + self.name + ": " + error);
             }
+            self.log(self.name + " set to " + command);
             callback();
         }
     );

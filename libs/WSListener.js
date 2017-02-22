@@ -23,7 +23,7 @@ WSListener.prototype.startListener = function () {
     });
 
     this.ws.on('message', function(message) {
-        self.log("OpenHAB WS - message from " +self.itemName+": "+ message);
+        //self.log("OpenHAB WS - message from " +self.itemName+": "+ message);//////////////////////////////////////////////////////////////
         self.callback(message);
     });
 

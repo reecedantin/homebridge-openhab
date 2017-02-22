@@ -166,13 +166,13 @@ ThermostatItem.prototype.updateCurrentTemperature = function(message) {
 };
 ThermostatItem.prototype.getCurrentTemperatureState = function(callback) {
     var self = this;
-    this.log("iOS - request current temperature state from " + this.itemCurrentTemperature.name + " (" + (self.name)+")");
+    //this.log("iOS - request current temperature state from " + this.itemCurrentTemperature.name + " (" + (self.name)+")");
     request(self.itemCurrentTemperature.link + '/state?type=json', function (error, response, body) {
         if (!error && response.statusCode == 200) {
-            self.log("OpenHAB HTTP - response from " + self.itemCurrentTemperature.name + " (" + (self.name)+"): " + body);
+            //self.log("OpenHAB HTTP - response from " + self.itemCurrentTemperature.name + " (" + (self.name)+"): " + body);
             callback(undefined,self.checkTemperatureState(body));
         } else {
-            self.log("OpenHAB HTTP - error from " + self.itemCurrentTemperature.name + " (" + (self.name)+"): " + error);
+            //self.log("OpenHAB HTTP - error from " + self.itemCurrentTemperature.name + " (" + (self.name)+"): " + error);
         }
     });
 };
@@ -187,33 +187,37 @@ ThermostatItem.prototype.getTargetTemperatureState = function(callback) {
         //Heating
         temperatureItem = this.itemHeatingThresholdTemperature;
     }
-    this.log("iOS - request current temperature state from " + temperatureItem.name + " (" + (self.name)+")");
+    //this.log("iOS - request current temperature state from " + temperatureItem.name + " (" + (self.name)+")");
     request(temperatureItem.link + '/state?type=json', function (error, response, body) {
         if (!error && response.statusCode == 200) {
-            self.log("OpenHAB HTTP - response from " + temperatureItem.name + " (" + (self.name)+"): " + body);
+            //self.log("OpenHAB HTTP - response from " + temperatureItem.name + " (" + (self.name)+"): " + body);
             callback(undefined,self.checkTemperatureState(body));
         } else {
-            self.log("OpenHAB HTTP - error from " + temperatureItem.name + " (" + (self.name)+"): " + error);
+            //self.log("OpenHAB HTTP - error from " + temperatureItem.name + " (" + (self.name)+"): " + error);
         }
     });
 };
 ThermostatItem.prototype.setTargetTemperatureState = function(value, callback) {
     var self = this;
     if (this.setInitialState || this.setFromOpenHAB) {
+        this.log(this.name + " target temperature: " + value);
         callback();
         return;
     }
-    //Cooling or off or auto
+    //On the cooling screen or the heating screen or the off screen
     var temperatureItem = null;
     if (this.itemTargetHeatingCoolingState.state == 1) {
         //Heating
+        this.log(this.name + " heating temperature: " + value);
         temperatureItem = this.itemHeatingThresholdTemperature;
     }
     else if (this.itemTargetHeatingCoolingState.state == 2) {
+        //Cooling
+        this.log(this.name + " cooling temperature: " + value);
         temperatureItem = this.itemCoolingThresholdTemperature;
     }
     if(temperatureItem != null) {
-        this.log("iOS - send message to " + temperatureItem.name + ": " + value + " current state: " + this.itemTargetHeatingCoolingState.state);
+        //this.log("iOS - send message to " + temperatureItem.name + ": " + value + " current state: " + this.itemTargetHeatingCoolingState.state);
         var self = this;
         var command = value;
         request.post(
@@ -224,9 +228,9 @@ ThermostatItem.prototype.setTargetTemperatureState = function(value, callback) {
             },
             function (error, response, body) {
                 if (!error && response.statusCode == 201) {
-                    self.log("OpenHAB HTTP - response from " + temperatureItem.name + ": " + body);
+                    //self.log("OpenHAB HTTP - response from " + temperatureItem.name + ": " + body);
                 } else {
-                    self.log("OpenHAB HTTP - error from " + temperatureItem.name + ": " + error);
+                    //self.log("OpenHAB HTTP - error from " + temperatureItem.name + ": " + error);
                 }
                 callback();
             }
@@ -241,13 +245,13 @@ ThermostatItem.prototype.setTargetTemperatureState = function(value, callback) {
 //CurrentHeatingCoolingState
 ThermostatItem.prototype.getCurrentHeatingCoolingState = function(callback) {
     var self = this;
-    this.log("iOS - request Current Heating/Cooling State state from " + this.itemTargetHeatingCoolingState.name + " (" + (self.name)+")");
+    //this.log("iOS - request Current Heating/Cooling State state from " + this.itemTargetHeatingCoolingState.name + " (" + (self.name)+")");
     request(self.itemTargetHeatingCoolingState.link + '/state?type=json', function (error, response, body) {
         if (!error && response.statusCode == 200) {
-            self.log("OpenHAB HTTP - response from " + self.itemTargetHeatingCoolingState.name + " (" + (self.name)+"): " + body);
+            //self.log("OpenHAB HTTP - response from " + self.itemTargetHeatingCoolingState.name + " (" + (self.name)+"): " + body);
             callback(undefined,self.checkCurrentHeatingCoolingState(body));
         } else {
-            self.log("OpenHAB HTTP - error from " + self.itemTargetHeatingCoolingState.name + " (" + (self.name)+"): " + error);
+            //self.log("OpenHAB HTTP - error from " + self.itemTargetHeatingCoolingState.name + " (" + (self.name)+"): " + error);
         }
     });
 };
@@ -291,25 +295,26 @@ ThermostatItem.prototype.updateTargetHeatingCoolingState = function(message) {
 };
 ThermostatItem.prototype.getTargetHeatingCoolingState = function(callback) {
     var self = this;
-    this.log("iOS - request Target Heating/Cooling State from " + this.itemTargetHeatingCoolingState.name + " (" + (self.name)+")");
+    //this.log("iOS - request Target Heating/Cooling State from " + this.itemTargetHeatingCoolingState.name + " (" + (self.name)+")");
     request(self.itemTargetHeatingCoolingState.link + '/state?type=json', function (error, response, body) {
         if (!error && response.statusCode == 200) {
-            self.log("OpenHAB HTTP - response from " + self.itemTargetHeatingCoolingState.name + " (" + (self.name)+"): " + body);
+            //self.log("OpenHAB HTTP - response from " + self.itemTargetHeatingCoolingState.name + " (" + (self.name)+"): " + body);
             callback(undefined,self.checkTargetHeatingCoolingState(body));
         } else {
-            self.log("OpenHAB HTTP - error from " + self.itemTargetHeatingCoolingState.name + " (" + (self.name)+"): " + error);
+            //self.log("OpenHAB HTTP - error from " + self.itemTargetHeatingCoolingState.name + " (" + (self.name)+"): " + error);
         }
     });
 };
 ThermostatItem.prototype.setTargetHeatingCoolingState = function(value,callback) {
     if (this.setInitialState || this.setFromOpenHAB) {
+        this.log(this.name + " heating/cooling state: " + value);
         callback();
         return;
     }
 
     var self = this;
     var command = value;
-    this.log("iOS - send message to " + this.itemTargetHeatingCoolingState.name + ": " + value);
+    //this.log("iOS - send message to " + this.itemTargetHeatingCoolingState.name + ": " + value);
     this.otherService
         .getCharacteristic(this.homebridge.hap.Characteristic.CurrentHeatingCoolingState)
         .setValue(this.checkCurrentHeatingCoolingState(value));
@@ -343,9 +348,10 @@ ThermostatItem.prototype.setTargetHeatingCoolingState = function(value,callback)
         },
         function (error, response, body) {
             if (!error && response.statusCode == 201) {
-                self.log("OpenHAB HTTP - response from " + self.itemTargetHeatingCoolingState.name + ": " + body);
+                this.log(this.name + " heating/cooling state: " + body);
+                //self.log("OpenHAB HTTP - response from " + self.itemTargetHeatingCoolingState.name + ": " + body);
             } else {
-                self.log("OpenHAB HTTP - error from " + self.itemTargetHeatingCoolingState.name + ": " + error);
+                //self.log("OpenHAB HTTP - error from " + self.itemTargetHeatingCoolingState.name + ": " + error);
             }
             callback();
         }
@@ -376,23 +382,24 @@ ThermostatItem.prototype.updateCoolingThresholdTemperature = function(message) {
 };
 ThermostatItem.prototype.getCoolingThresholdTemperature = function(callback) {
     var self = this;
-    this.log("iOS - request Cooling Threshold Temperature state from " + this.itemCoolingThresholdTemperature.name + " (" + (self.name)+")");
+    //this.log("iOS - request Cooling Threshold Temperature state from " + this.itemCoolingThresholdTemperature.name + " (" + (self.name)+")");
     request(self.itemCoolingThresholdTemperature.link + '/state?type=json', function (error, response, body) {
         if (!error && response.statusCode == 200) {
-            self.log("OpenHAB HTTP - response from " + self.itemCoolingThresholdTemperature.name + " (" + (self.name)+"): " + body);
+            //self.log("OpenHAB HTTP - response from " + self.itemCoolingThresholdTemperature.name + " (" + (self.name)+"): " + body);
             callback(undefined,self.checkTemperatureState(body));
         } else {
-            self.log("OpenHAB HTTP - error from " + self.itemCoolingThresholdTemperature.name + " (" + (self.name)+"): " + error);
+            //self.log("OpenHAB HTTP - error from " + self.itemCoolingThresholdTemperature.name + " (" + (self.name)+"): " + error);
         }
     });
 };
 ThermostatItem.prototype.setCoolingThresholdTemperature = function(value,callback) {
 
     if (this.setInitialState || this.setFromOpenHAB) {
+        this.log(this.name + " cooling temperature: " + value);
         callback();
         return;
     }
-    this.log("iOS - send message to " + this.itemCoolingThresholdTemperature.name + ": " + value);
+    //this.log("iOS - send message to " + this.itemCoolingThresholdTemperature.name + ": " + value);
     var self = this;
     var command = value;
     request.post(
@@ -403,9 +410,10 @@ ThermostatItem.prototype.setCoolingThresholdTemperature = function(value,callbac
         },
         function (error, response, body) {
             if (!error && response.statusCode == 201) {
-                self.log("OpenHAB HTTP - response from " + self.itemCoolingThresholdTemperature.name + ": " + body);
+                this.log(this.name + " cooling temperature: " + body);
+                //self.log("OpenHAB HTTP - response from " + self.itemCoolingThresholdTemperature.name + ": " + body);
             } else {
-                self.log("OpenHAB HTTP - error from " + self.itemCoolingThresholdTemperature.name + ": " + error);
+                //self.log("OpenHAB HTTP - error from " + self.itemCoolingThresholdTemperature.name + ": " + error);
             }
             callback();
         }
@@ -436,22 +444,23 @@ ThermostatItem.prototype.updateHeatingThresholdTemperature = function(message) {
 };
 ThermostatItem.prototype.getHeatingThresholdTemperature = function(callback) {
     var self = this;
-    this.log("iOS - request Heating Threshold Temperature state from " + this.itemHeatingThresholdTemperature.name + " (" + (self.name)+")");
+    //this.log("iOS - request Heating Threshold Temperature state from " + this.itemHeatingThresholdTemperature.name + " (" + (self.name)+")");
     request(self.itemHeatingThresholdTemperature.link + '/state?type=json', function (error, response, body) {
         if (!error && response.statusCode == 200) {
-            self.log("OpenHAB HTTP - response from " + self.itemHeatingThresholdTemperature.name + " (" + (self.name)+"): " + body);
+            //self.log("OpenHAB HTTP - response from " + self.itemHeatingThresholdTemperature.name + " (" + (self.name)+"): " + body);
             callback(undefined,self.checkTemperatureState(body));
         } else {
-            self.log("OpenHAB HTTP - error from " + self.itemHeatingThresholdTemperature.name + " (" + (self.name)+"): " + error);
+            //self.log("OpenHAB HTTP - error from " + self.itemHeatingThresholdTemperature.name + " (" + (self.name)+"): " + error);
         }
     });
 };
 ThermostatItem.prototype.setHeatingThresholdTemperature = function(value, callback) {
     if (this.setInitialState || this.setFromOpenHAB) {
+        this.log(this.name + " heating temperature: " + value);
         callback();
         return;
     }
-    this.log("iOS - send message to " + this.itemHeatingThresholdTemperature.name + ": " + value);
+    //this.log("iOS - send message to " + this.itemHeatingThresholdTemperature.name + ": " + value);
     var self = this;
     var command = value;
     request.post(
@@ -462,9 +471,10 @@ ThermostatItem.prototype.setHeatingThresholdTemperature = function(value, callba
         },
         function (error, response, body) {
             if (!error && response.statusCode == 201) {
-                self.log("OpenHAB HTTP - response from " + self.itemHeatingThresholdTemperature.name + ": " + body);
+                this.log(this.name + " heating temperature: " + body);
+                //self.log("OpenHAB HTTP - response from " + self.itemHeatingThresholdTemperature.name + ": " + body);
             } else {
-                self.log("OpenHAB HTTP - error from " + self.itemHeatingThresholdTemperature.name + ": " + error);
+                //self.log("OpenHAB HTTP - error from " + self.itemHeatingThresholdTemperature.name + ": " + error);
             }
             callback();
         }

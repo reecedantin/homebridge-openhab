@@ -147,25 +147,25 @@ SecuritySystemItem.prototype.getSSCurrentState = function(callback) {
     var self = this;
     var alarmTriggered = false;
 
-    this.log("iOS - request target alarm state from " + this.itemSSAlarmState.name + " (" + (self.name)+")");
+    //this.log("iOS - request target alarm state from " + this.itemSSAlarmState.name + " (" + (self.name)+")");
     request(self.itemSSAlarmState.link + '/state?type=json', function (error, response, body) {
         if (!error && response.statusCode == 200) {
-            self.log("OpenHAB HTTP - response from " + self.itemSSAlarmState.name + " (" + (self.name)+"): " + body);
+            //self.log("OpenHAB HTTP - response from " + self.itemSSAlarmState.name + " (" + (self.name)+"): " + body);
             alarmTriggered = body === "Burglary";
         } else {
-            self.log("OpenHAB HTTP - error from " + self.itemSSAlarmState.name + " (" + (self.name)+"): " + error);
+            //self.log("OpenHAB HTTP - error from " + self.itemSSAlarmState.name + " (" + (self.name)+"): " + error);
         }
     })
 
     if(!alarmTriggered)
     {
-      this.log("iOS - request current security system state from " + this.itemSSCurrentState.name + " (" + (self.name)+")");
+      //this.log("iOS - request current security system state from " + this.itemSSCurrentState.name + " (" + (self.name)+")");
       request(self.itemSSCurrentState.link + '/state?type=json', function (error, response, body) {
           if (!error && response.statusCode == 200) {
-              self.log("OpenHAB HTTP - response from " + self.itemSSCurrentState.name + " (" + (self.name)+"): " + body);
+              //self.log("OpenHAB HTTP - response from " + self.itemSSCurrentState.name + " (" + (self.name)+"): " + body);
               callback(undefined,self.checkSSCurrentState(body));
           } else {
-              self.log("OpenHAB HTTP - error from " + self.itemSSCurrentState.name + " (" + (self.name)+"): " + error);
+              //self.log("OpenHAB HTTP - error from " + self.itemSSCurrentState.name + " (" + (self.name)+"): " + error);
           }
       })
     }
@@ -181,13 +181,13 @@ SecuritySystemItem.prototype.getSSCurrentState = function(callback) {
  */
 SecuritySystemItem.prototype.getSSTargetState = function(callback) {
     var self = this;
-    this.log("iOS - request target security system state from " + this.itemSSTargetState.name + " (" + (self.name)+")");
+    //this.log("iOS - request target security system state from " + this.itemSSTargetState.name + " (" + (self.name)+")");
     request(self.itemSSTargetState.link + '/state?type=json', function (error, response, body) {
         if (!error && response.statusCode == 200) {
-            self.log("OpenHAB HTTP - response from " + self.itemSSTargetState.name + " (" + (self.name)+"): " + body);
+            //self.log("OpenHAB HTTP - response from " + self.itemSSTargetState.name + " (" + (self.name)+"): " + body);
             callback(undefined,self.checkSSTargetState(body));
         } else {
-            self.log("OpenHAB HTTP - error from " + self.itemSSTargetState.name + " (" + (self.name)+"): " + error);
+            //self.log("OpenHAB HTTP - error from " + self.itemSSTargetState.name + " (" + (self.name)+"): " + error);
         }
     })
 };
@@ -231,6 +231,11 @@ SecuritySystemItem.prototype.updateSSTargetState = function(message) {
  * @param message
  */
 SecuritySystemItem.prototype.updateSSAlarmState = function(message) {
+    if(message === "Burglary") {
+        this.log(this.name + " ALARM TRIGGERED!");
+    } else {
+        this.log(this.name + " Alarm reset");
+    }
     this.otherService
         .getCharacteristic(this.homebridge.hap.Characteristic.SecuritySystemCurrentState)
         .setValue(this.checkSSCurrentState(message));
@@ -244,40 +249,33 @@ SecuritySystemItem.prototype.updateSSAlarmState = function(message) {
 SecuritySystemItem.prototype.setSSTargetState = function(value, callback){
     var self = this;
 
+    var command = 'Off';
+    if (value == 0) {
+      command = 'Vacation';
+    } else if (value == 1) {
+      command = 'Away';
+    } else if (value == 2) {
+      command = 'Night';
+    } else if (value == 3) {
+      command = 'Off';
+    }
+
     if (this.setInitialState) {
         this.setInitialState = false;
+        this.log(this.name + " set to " + command);
         callback();
         return;
     }
 
     if (this.setFromOpenHAB) {
+        this.log(this.name + " set to " + command);
         callback();
         return;
     }
 
-    this.log("iOS - send message to " + this.itemSSTargetState.name + ": " + value);
+    //this.log("iOS - send message to " + this.itemSSTargetState.name + ": " + value);
 
-
-    var command = 'Off';
-
-    if (value == 0)
-    {
-      command = 'Vacation';
-    }
-    else if (value == 1)
-    {
-      command = 'Away';
-    }
-    else if (value == 2)
-    {
-      command = 'Night';
-    }
-    else if (value == 3)
-    {
-      command = 'Off';
-    }
-
-    this.log("iOS - send message to " + this.itemSSTargetState.name + ": " + command);
+    //this.log("iOS - send message to " + this.itemSSTargetState.name + ": " + command);
 
     request.post(
         this.itemSSTargetState.link,
@@ -287,9 +285,10 @@ SecuritySystemItem.prototype.setSSTargetState = function(value, callback){
         },
         function (error, response, body) {
             if (!error && response.statusCode == 201) {
-                self.log("OpenHAB HTTP - response from " + self.itemSSTargetState.name + ": " + body);
+                this.log(this.name + " set to " + body);
+                //self.log("OpenHAB HTTP - response from " + self.itemSSTargetState.name + ": " + body);
             } else {
-                self.log("OpenHAB HTTP - error from " + self.itemSSTargetState.name + ": " + error);
+                //self.log("OpenHAB HTTP - error from " + self.itemSSTargetState.name + ": " + error);
             }
             callback();
         }
