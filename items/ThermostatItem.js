@@ -208,12 +208,10 @@ ThermostatItem.prototype.setTargetTemperatureState = function(value, callback) {
     var temperatureItem = null;
     if (this.itemTargetHeatingCoolingState.state == 1) {
         //Heating
-        this.log(this.name + " heating temperature: " + value);
         temperatureItem = this.itemHeatingThresholdTemperature;
     }
     else if (this.itemTargetHeatingCoolingState.state == 2) {
         //Cooling
-        this.log(this.name + " cooling temperature: " + value);
         temperatureItem = this.itemCoolingThresholdTemperature;
     }
     if(temperatureItem != null) {
@@ -348,7 +346,7 @@ ThermostatItem.prototype.setTargetHeatingCoolingState = function(value,callback)
         },
         function (error, response, body) {
             if (!error && response.statusCode == 201) {
-                if(body === "") {
+                if(body !== " ") {
                     self.log(self.name + " heating/cooling state: " + body);
                 }
                 //self.log("OpenHAB HTTP - response from " + self.itemTargetHeatingCoolingState.name + ": " + body);
@@ -412,7 +410,7 @@ ThermostatItem.prototype.setCoolingThresholdTemperature = function(value,callbac
         },
         function (error, response, body) {
             if (!error && response.statusCode == 201) {
-                if(body){
+                if(body !== " ") {
                     self.log(self.name + " cooling temperature: " + body);
                 }
                 //self.log("OpenHAB HTTP - response from " + self.itemCoolingThresholdTemperature.name + ": " + body);
@@ -475,7 +473,7 @@ ThermostatItem.prototype.setHeatingThresholdTemperature = function(value, callba
         },
         function (error, response, body) {
             if (!error && response.statusCode == 201) {
-                if(body === "") {
+                if(body !== " ") {
                     self.log(self.name + " heating temperature: " + body);
                 }
                 //self.log("OpenHAB HTTP - response from " + self.itemHeatingThresholdTemperature.name + ": " + body);
